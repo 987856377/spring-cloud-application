@@ -1,0 +1,44 @@
+server:
+    port: 9527
+
+spring:
+    application:
+        name: cloud-gateway-service
+    cloud:
+        gateway:
+            discovery:
+                locator:
+                    enabled: true   # \u5F00\u542F\u4ECE\u6CE8\u518C\u4E2D\u5FC3\u52A8\u6001\u521B\u5EFA\u8DEF\u7531\u529F\u80FD,\u5229\u7528\u4E3A\u670D\u52A1\u540D\u8FDB\u884C\u8DEF\u7531
+            routes:
+#             payment
+              - id: payment_route_8086                      # \u8DEF\u7531 ID
+#                uri: http://localhost:8086                 # \u5339\u914D\u540E\u63D0\u4F9B\u670D\u52A1\u7684\u8DEF\u7531\u5730\u5740
+                uri: lb://CLOUD-HYSTRIX-PAYMENT-SERVICE     # \u5339\u914D\u540E\u63D0\u4F9B\u670D\u52A1\u7684\u670D\u52A1\u540D
+                predicates:                                 # \u65AD\u8A00
+                  - Path=/payment/**                        # \u8DEF\u5F84\u5339\u914D\u7684\u8FDB\u884C\u8DEF\u7531
+                  - Before=2020-04-30T22:59:28.605+08:00[Asia/Shanghai]     # \u6307\u5B9A\u65F6\u95F4\u4E4B\u524D\u53EF\u4EE5\u8BBF\u95EE
+                  - After=2020-04-30T21:21:28.605+08:00[Asia/Shanghai]      # \u6307\u5B9A\u65F6\u95F4\u4E4B\u540E\u53EF\u4EE5\u8BBF\u95EE
+#                  - Between=2020-04-30T21:21:28.605+08:00[Asia/Shanghai], 2020-04-30T22:59:28.605+08:00[Asia/Shanghai]  # \u6307\u5B9A\u65F6\u95F4\u6BB5\u53EF\u4EE5\u8BBF\u95EE
+                  - Cookie=username,nil
+                  - Header=X-Request-Id, \d+                # \u8BF7\u6C42\u5FC5\u987B\u643A\u5E26\u6307\u5B9A\u7684\u8BF7\u6C42\u5934,\u503C\u4E3A\u6570\u5B57
+#                  - Host=**.com                            # \u6307\u5B9A\u57DF\u540D\u4E3B\u673A\u53EF\u8BBF\u95EE
+                  - Method=POST                             # \u6307\u5B9A\u8BF7\u6C42\u65B9\u6CD5\u53EF\u4EE5\u8BBF\u95EE
+                  - Query=username, \d+                     # \u8BF7\u6C42\u5FC5\u987B\u643A\u5E26\u6307\u5B9A\u5730\u8BF7\u6C42\u53C2\u6570
+#             order
+              - id: order_route_8096
+#                uri: http://localhost:8096
+                uri: lb://CLOUD-ORDER-SERVICE
+                predicates:
+                  - Path=/order/**
+                filters:
+                    - AddRequestParameter=X-Request-Id,1024 # \u8FC7\u6EE4\u5668\uFF0C\u6DFB\u52A0\u8BF7\u6C42\u5934
+
+# eureka
+eureka:
+    instance:
+        prefer-ip-address: true
+        instance-id: gateway-9527
+    client:
+        register-with-eureka: true
+        fetch-registry: true
+        serviceUrl.defaultZone: http://eureka5001.com:5001/eureka/,http://eureka5002.com:5002/eureka/
