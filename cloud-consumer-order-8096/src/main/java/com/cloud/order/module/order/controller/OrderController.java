@@ -31,7 +31,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/order")
-@DefaultProperties(defaultFallback = "paymentGlobalFallBack")   // 指定全局fallback异常处理方法
+@DefaultProperties(defaultFallback = "paymentGlobalFallBack",commandProperties = {@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds",value = "1500")})   // 指定全局fallback异常处理方法
 public class OrderController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());

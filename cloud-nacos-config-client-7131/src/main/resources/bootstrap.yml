@@ -1,0 +1,22 @@
+server:
+    port: 7131
+
+spring:
+    application:
+        name: nacos-config-client
+    cloud:
+        nacos:
+            discovery:
+                server-addr: 127.0.0.1:8848
+            config:
+                server-addr: 127.0.0.1:8848
+                file-extension: yaml
+                group: DEV_GROUP
+                namespace: 27105b01-f014-4c27-bdfc-b772f010370b
+
+# ${spring.application.name}-${spring.profile.active}.${spring.cloud.nacos.config.file-extension}
+#        nacos-config-client            dev                             yml
+
+# nacos-config-client-dev.yaml
+
+# nacos-config-client-test.yml   ----> config.info

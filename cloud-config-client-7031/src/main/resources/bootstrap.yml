@@ -1,0 +1,24 @@
+server:
+    port: 7031
+
+spring:
+    application:
+        name: cloud-config-client
+
+    cloud:
+        config:
+            label: master                       # 分支名称
+            name: config                        # 配置文件名
+            profile: dev                        # 文件后缀      上述3个综合, master分支上config-dev.yml的配置文件被读取
+                                                #  http://config-7021.com:7021/master/config-dev.yml
+            uri: http://config-7021.com:7021    # 配置中心地址
+
+# eureka
+eureka:
+    instance:
+        prefer-ip-address: true
+        instance-id: config-client-7031
+    client:
+        register-with-eureka: true
+        fetch-registry: true
+        serviceUrl.defaultZone: http://eureka5001.com:5001/eureka/,http://eureka5002.com:5002/eureka/

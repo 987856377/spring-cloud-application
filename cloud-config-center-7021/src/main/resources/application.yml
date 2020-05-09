@@ -1,0 +1,24 @@
+server:
+    port: 7021
+
+spring:
+    application:
+        name: cloud-config-center
+
+    cloud:
+        config:
+            server:
+                git:
+                    uri: https://github.com/987856377/spring-cloud-config.git
+                    search-paths: spring-cloud-config
+            label: master
+
+# eureka
+eureka:
+    instance:
+        prefer-ip-address: true
+        instance-id: config-center-7021
+    client:
+        register-with-eureka: true
+        fetch-registry: true
+        serviceUrl.defaultZone: http://eureka5001.com:5001/eureka/,http://eureka5002.com:5002/eureka/
